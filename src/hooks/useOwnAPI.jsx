@@ -1,19 +1,29 @@
+import { useState, useEffect } from "react";
 import axios from "axios";
 
-const useOwnAPI = () => {
-  const getImages = async () => {
-    axios
-      .get("http://localhost:8000/image")
-      .then(function (response) {
-        // handle success
-        console.log(response);
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      });
+axios.defaults.baseURL = "http://localhost:8000"; // put in .env for api hosting elsewhere?
+
+const useOwnAPI = (axiosParams) => {
+  const [response, setResponse] = useState(undefined);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async (params) => {
+    try {
+      const result = await axios.request(params);
+      setResponse(result.data);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
   };
-  return { getImages };
+
+  useEffect(() => {
+    fetchData(axiosParams);
+  }, []);
+
+  return { response, error, loading };
 };
 
 export default useOwnAPI;
