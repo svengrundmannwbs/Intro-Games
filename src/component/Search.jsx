@@ -2,27 +2,30 @@ import { useState, useEffect } from "react";
 import { Button, Col, Container, Form, Row, Card } from "react-bootstrap";
 import { motion } from "framer-motion";
 import NavBar from "./NavBar";
-import useContentful from "../hooks/useContentful";
+import axios from "axios";
+//import useContentful from "../hooks/useContentful";
+import useOwnAPI from "../hooks/useOwnAPI";
 import "./search.css";
 
 function Search() {
-  const { searchArchivedGames } = useContentful();
+  //const { searchArchivedGames } = useContentful();
+  //const { getImages } = useOwnAPI();
   const [results, setResults] = useState([]);
+
+  const [search, setSearch] = useState("");
   useEffect(() => {
-    searchArchivedGames("archivedGames")
-      .then((response) => {
-        let tempArr = [];
-        response.items.map((element) => tempArr.push(element.fields.name));
-        setResults(tempArr);
+    axios
+      .get("http://localhost:8000/games")
+      .then(function (response) {
+        // handle success
+        console.log(response);
       })
-      .then(() => {
-        let tempArr = [];
-        results.map((element) => tempArr.push(element.fields.name));
-        setShowresults(tempArr);
+      .catch(function (error) {
+        // handle error
+        console.log(error);
       });
   }, []);
 
-  const [search, setSearch] = useState("");
   const [showResults, setShowresults] = useState([]);
 
   const handleChange = (e) => {
