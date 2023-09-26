@@ -2,10 +2,11 @@ import express from "express";
 import articlesRouter from "./routes/articlesRouter.js";
 import gamesRouter from "./routes/gamesRouter.js";
 import imagesRouter from "./routes/imagesRouter.js";
+import cors from "cors";
 
 const app = express();
 const PORT = 8000;
-
+app.use(cors());
 app.use(express.json());
 //ROUTES
 app.use("/articles", articlesRouter);
