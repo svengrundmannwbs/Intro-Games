@@ -5,6 +5,6 @@ import {
 
 const gamesRouter = express.Router();
 
-booksRouter.route('/').get(getAllGames)
+gamesRouter.route('/').get(getAllGames)
 
 export default gamesRouter;
