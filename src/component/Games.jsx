@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { ProgressBar } from "react-bootstrap";
 import { motion } from "framer-motion";
-import useContentful from "../hooks/useContentful";
+import axios from "axios";
 import NavBar from "./NavBar";
 import "./games.css";
 
 function Games() {
   const [games, setGames] = useState();
-  const { getContent } = useContentful();
   const [sort, setSort] = useState();
 
   const sortList = [
@@ -39,12 +38,19 @@ function Games() {
   };
 
   useEffect(() => {
-    getContent("game", "fields.published").then((response) =>
-      setGames(response)
-    );
+    axios
+      .get("http://localhost:8000/games")
+      .then(function (response) {
+        //console.log(response.data);
+        setGames(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }, []);
+
   useEffect(() => {
-    getContent("game", sort).then((response) => setGames(response));
+    //getContent("game", sort).then((response) => setGames(response));
   }, [sort]);
   return (
     <>
@@ -80,32 +86,32 @@ function Games() {
           </div>
 
           {games
-            ? games.items.map((game, key) => {
+            ? games.map((game, key) => {
                 return (
                   <div className="games" key={key}>
                     <div className="row">
                       <div className="col d-flex justify-content-center">
-                        <h2>{game.fields.name}</h2>
+                        <h2>{game.name}</h2>
                       </div>
                       <div className="col d-flex justify-content-center">
-                        <div className="published">{game.fields.published}</div>
+                        <div className="published">{game.release_year}</div>
                       </div>
                     </div>
                     <div className="row d-flex align-items-center">
                       <div className="col d-flex justify-content-center">
-                        <div className="company">{game.fields.company} </div>
+                        <div className="company">{game.publisher} </div>
                       </div>
                       <div className="col">
                         <div className="rating">
                           <ProgressBar
                             key={"progress" + key}
-                            now={game.fields.rating}
-                            label={`Rating: ${game.fields.rating} / 100`}
+                            now={game.rating}
+                            label={`Rating: ${game.rating} / 100`}
                           />
                         </div>
                       </div>
                     </div>
-                    <div className="row">
+                    {/* <div className="row">
                       {game.fields.bilder?.map((bild, id, key) => (
                         <div
                           className="col d-flex justify-content-center"
@@ -116,7 +122,7 @@ function Games() {
                           </div>
                         </div>
                       ))}
-                    </div>
+                    </div> */}
                   </div>
                 );
               })
