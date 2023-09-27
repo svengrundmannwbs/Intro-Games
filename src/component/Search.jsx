@@ -16,7 +16,7 @@ import "./search.css";
 function Search() {
   const { response, loading, error } = useOwnAPI({
     method: "GET",
-    url: "/games",
+    url: "/search",
   });
 
   const [results, setResults] = useState([]);
@@ -91,7 +91,7 @@ function Search() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 0.6 }}
+                      transition={{ duration: 0.8 }}
                     >
                       <Card
                         border="warning"
