@@ -1,33 +1,33 @@
 import { useState, useEffect } from "react";
-import { Button, Col, Container, Form, Row, Card } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Row,
+  Card,
+  ProgressBar,
+} from "react-bootstrap";
 import { motion } from "framer-motion";
 import NavBar from "./NavBar";
-import axios from "axios";
-//import useContentful from "../hooks/useContentful";
 import useOwnAPI from "../hooks/useOwnAPI";
 import "./search.css";
 
 function Search() {
-  //const { searchArchivedGames } = useContentful();
-  //const { getImages } = useOwnAPI();
+  const { response, loading, error } = useOwnAPI({
+    method: "GET",
+    url: "/games",
+  });
+
   const [results, setResults] = useState([]);
 
-  const [search, setSearch] = useState("");
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/games")
-      .then(function (response) {
-        // handle success
-        console.log(response);
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      });
-  }, []);
+    if (response !== null) {
+      setResults(response);
+    }
+  }, [response]);
 
-  const [showResults, setShowresults] = useState([]);
-
+  const [search, setSearch] = useState("");
   const handleChange = (e) => {
     e.preventDefault();
     setSearch(e.target.value);
@@ -38,9 +38,12 @@ function Search() {
   };
 
   function filterItems(arr, query) {
-    return arr.filter((el) => el.toLowerCase().includes(query.toLowerCase()));
+    return arr.filter(
+      (item) => item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+    );
   }
 
+  const [showResults, setShowresults] = useState([]);
   useEffect(() => {
     if (search.length >= 2) {
       setShowresults(filterItems(results, search));
@@ -65,7 +68,7 @@ function Search() {
                   name="search"
                   size="lg"
                   type="text"
-                  placeholder="Search"
+                  placeholder="Search for game name"
                   className="me-2 rounded-pill"
                   value={search}
                   onChange={handleChange}
@@ -81,9 +84,10 @@ function Search() {
           <Row>
             <Col>
               {search.length >= 2
-                ? showResults.map((element, key) => (
+                ? showResults.map((game, key) => (
                     <motion.div
                       className="stagCard"
+                      key={"id" + game.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
@@ -100,8 +104,17 @@ function Search() {
                       >
                         <Card.Header>Game</Card.Header>
                         <Card.Body>
-                          <Card.Title>{element}</Card.Title>
-                          <Card.Text>Missing infos</Card.Text>
+                          <Card.Title>
+                            {game.name}
+                            {"  "} <small>({game.release_year})</small>
+                          </Card.Title>
+                          <Card.Text>Publisher: {game.publisher}</Card.Text>
+
+                          <ProgressBar
+                            key={"progress" + key}
+                            now={game.rating}
+                            label={`Rating: ${game.rating} / 100`}
+                          />
                         </Card.Body>
                       </Card>
                     </motion.div>
