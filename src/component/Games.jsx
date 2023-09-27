@@ -112,18 +112,18 @@ function Games() {
                         </div>
                       </div>
                     </div>
-                    {/* <div className="row">
-                      {game.fields.bilder?.map((bild, id, key) => (
+                    <div className="row">
+                      {game.images.map((bild, id, key) => (
                         <div
                           className="col d-flex justify-content-center"
                           key={"img" + id + key}
                         >
                           <div className="images">
-                            <img src={bild.fields.file.url} />
+                            <img src={bild.url} />
                           </div>
                         </div>
                       ))}
-                    </div> */}
+                    </div>
                   </div>
                 );
               })
