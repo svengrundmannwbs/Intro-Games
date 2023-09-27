@@ -3,9 +3,16 @@ import { ProgressBar } from "react-bootstrap";
 import { motion } from "framer-motion";
 import axios from "axios";
 import NavBar from "./NavBar";
+import useOwnAPI from "../hooks/useOwnAPI";
 import "./games.css";
 
 function Games() {
+
+  const { response, loading, error } = useOwnAPI({
+    method: "GET",
+    url: "/games",
+  });
+
   const [games, setGames] = useState();
   const [sort, setSort] = useState();
 
@@ -38,16 +45,10 @@ function Games() {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/games")
-      .then(function (response) {
-        //console.log(response.data);
-        setGames(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, []);
+    if (response !== null) {
+      setGames(response);
+    }
+  }, [response]);
 
   useEffect(() => {
     //getContent("game", sort).then((response) => setGames(response));
@@ -111,18 +112,18 @@ function Games() {
                         </div>
                       </div>
                     </div>
-                    {/* <div className="row">
-                      {game.fields.bilder?.map((bild, id, key) => (
+                    <div className="row">
+                      {game.images.map((bild, id, key) => (
                         <div
                           className="col d-flex justify-content-center"
                           key={"img" + id + key}
                         >
                           <div className="images">
-                            <img src={bild.fields.file.url} />
+                            <img src={bild.url} />
                           </div>
                         </div>
                       ))}
-                    </div> */}
+                    </div>
                   </div>
                 );
               })
