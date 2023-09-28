@@ -28,6 +28,19 @@
   height: 560px;
   z-index: -10;
 }
+.error {
+  background-image: url(/src/assets/404.gif);
+  background-repeat: no-repeat;
+  width: 650px;
+  height: 700px;
+  position: absolute;
+  top: 150px;
+  z-index: 0;
+}
+
+.error div {
+  z-index: 2;
+}
 
 .arcade {
   background-image: url(/src/assets/acrade.png);
