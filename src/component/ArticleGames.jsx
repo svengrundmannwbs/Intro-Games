@@ -1,34 +1,26 @@
 import { useState, useEffect } from "react";
-import useContentful from "../hooks/useContentful";
-import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import { BLOCKS, INLINES } from "@contentful/rich-text-types";
+import useOwnAPI from "../hooks/useOwnAPI";
+
 import { motion } from "framer-motion";
 import NavBar from "./NavBar";
 import "./article.css";
 
 function ArticleGames() {
+  const { response, loading, error } = useOwnAPI({
+    method: "GET",
+    url: "/articles",
+  });
+
   const [articles, setArticles] = useState();
-  const { getContent } = useContentful();
-
-  const renderOptions = {
-    renderNode: {
-      [BLOCKS.EMBEDDED_ASSET]: (node, children) => {
-        // render the EMBEDDED_ASSET as you need
-        return (
-          <img
-            src={`https://${node.data.target.fields.file.url}`}
-            height={node.data.target.fields.file.details.image.height}
-            width={node.data.target.fields.file.details.image.width}
-            alt={node.data.target.fields.description}
-          />
-        );
-      },
-    },
-  };
-
   useEffect(() => {
-    getContent("article", "").then((response) => setArticles(response));
-  }, []);
+    if (response !== null) {
+      setArticles(response);
+    }
+  }, [response]);
+
+  // useEffect(() => {
+  //   getContent("article", "").then((response) => setArticles(response));
+  // }, []);
 
   return (
     <>
@@ -36,22 +28,20 @@ function ArticleGames() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+        transition={{ duration: 0.5 }}>
         <NavBar />
         <div className="gradient"></div>
         <div className="articlebg">
           <div className="container">
             {articles
-              ? articles.items.map((article, key) => {
+              ? articles.map((article, key) => {
                   return (
-                    <div className="article" key={key}>
-                      <h2>{article.fields.title}</h2>
-                      {documentToReactComponents(
-                        article.fields.richText,
-                        renderOptions
-                      )}
-                    </div>
+                    <div
+                      className="article"
+                      key={key}
+                      dangerouslySetInnerHTML={{
+                        __html: article.richtext,
+                      }}></div>
                   );
                 })
               : "No Results"}
