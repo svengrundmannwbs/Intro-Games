@@ -7,22 +7,21 @@ import useOwnAPI from "../hooks/useOwnAPI";
 import "./games.css";
 
 function Games() {
+  const [games, setGames] = useState();
+  const [sort, setSort] = useState("");
 
   const { response, loading, error } = useOwnAPI({
     method: "GET",
     url: "/games",
   });
 
-  const [games, setGames] = useState();
-  const [sort, setSort] = useState();
-
   const sortList = [
-    "fields.rating",
-    "-fields.rating",
-    "fields.published",
-    "-fields.published",
-    "fields.company",
-    "-fields.company",
+    "ratinga",
+    "ratingd",
+    "release_yeara",
+    "release_yeard",
+    "publishera",
+    "publisherd",
   ];
 
   const ratingUp = () => {
@@ -51,8 +50,15 @@ function Games() {
   }, [response]);
 
   useEffect(() => {
-    //getContent("game", sort).then((response) => setGames(response));
+    const getGamesSorted = async () => {
+      const response = await axios.get(
+        `http://localhost:8000/games?sort=${sort}`
+      );
+      setGames(response.data);
+    };
+    getGamesSorted();
   }, [sort]);
+
   return (
     <>
       <motion.div
@@ -79,10 +85,10 @@ function Games() {
               Published ↓
             </button>
             <button className="companyup-btn" onClick={companyUp}>
-              Company ↑
+              Publisher ↑
             </button>
             <button className="companydown-btn" onClick={companyDown}>
-              Company ↓
+              Publisher ↓
             </button>
           </div>
 
