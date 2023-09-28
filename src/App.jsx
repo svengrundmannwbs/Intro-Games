@@ -6,6 +6,7 @@ import ArticleGames from "./component/ArticleGames";
 import { AnimatePresence } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import NotFound from "./component/NotFound";
 
 function App() {
   const location = useLocation();
@@ -18,6 +19,7 @@ function App() {
           <Route path="/games" element={<Games />} />
           <Route path="/articles" element={<ArticleGames />} />
           <Route path="/search" element={<Search />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
     </>
